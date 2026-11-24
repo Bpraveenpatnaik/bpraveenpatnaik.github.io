@@ -19,6 +19,7 @@
   --accent: #2550b8;
   --accent-soft: #e6ecfa;
   --good: #1d7a46;
+  --edge: #7f889b;
   --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -32,13 +33,13 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0f131b; --surface: #161c27; --ink: #e8ecf3; --ink-2: #a3adbf;
-    --line: #283142; --accent: #8fb0ff; --accent-soft: #1d2a47; --good: #5fcf8e;
+    --line: #283142; --accent: #8fb0ff; --accent-soft: #1d2a47; --good: #5fcf8e; --edge: #6f7a90;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0f131b; --surface: #161c27; --ink: #e8ecf3; --ink-2: #a3adbf;
-  --line: #283142; --accent: #8fb0ff; --accent-soft: #1d2a47; --good: #5fcf8e;
+  --line: #283142; --accent: #8fb0ff; --accent-soft: #1d2a47; --good: #5fcf8e; --edge: #6f7a90;
   color-scheme: dark;
 }
 
@@ -151,17 +152,6 @@ h3 {
 }
 ul.built { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.45rem; }
 ul.built li::marker { color: var(--accent); }
-.flow {
-  margin: 0;
-  font: 400 0.8rem/1.6 var(--font-mono);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 0.9rem 1rem;
-  overflow-x: auto;
-  white-space: pre;
-  color: var(--ink);
-}
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
 .chips li {
   font: 400 var(--step--1)/1 var(--font-mono);
@@ -179,6 +169,29 @@ td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-
 tr.best td { font-weight: 600; }
 tr.best td:first-child::after { content: " best"; font: 500 0.7rem var(--font-mono); color: var(--good); }
 .repo { font: 500 var(--step--1)/1.4 var(--font-mono); }
+
+/* diagrams: inline SVG drawn from the page tokens; wide version on desktop, stacked version on phones */
+.diagram { margin: 0; display: grid; gap: 0.6rem; }
+.diagram svg { width: 100%; height: auto; display: block; }
+.diagram .tall { display: none; max-width: 420px; }
+.diagram figcaption { font-size: var(--step--1); color: var(--ink-2); max-width: 70ch; }
+.dg .n { fill: var(--surface); stroke: var(--edge); stroke-width: 1.2; }
+.dg .n.acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+.dg .t { fill: var(--ink); font: 600 13px var(--font-body); text-anchor: middle; }
+.dg .s { fill: var(--ink-2); font: 400 11px var(--font-mono); text-anchor: middle; }
+.dg .l { fill: var(--ink-2); font: 500 11px var(--font-mono); }
+.dg .l.acc { fill: var(--accent); }
+.dg .mid { text-anchor: middle; }
+.dg .end { text-anchor: end; }
+.dg .e { fill: none; stroke: var(--edge); stroke-width: 1.5; }
+.dg .e.acc { stroke: var(--accent); stroke-width: 2; }
+.ah { fill: var(--edge); }
+.ah.acc { fill: var(--accent); }
+.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+@media (max-width: 600px) {
+  .diagram .wide { display: none; }
+  .diagram .tall { display: block; }
+}
 
 /* skills + footer */
 .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem 2rem; }
@@ -219,6 +232,12 @@ footer {
 </head>
 <body>
 <div class="wrap">
+<svg class="defs" aria-hidden="true" focusable="false">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="ah-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="ah acc" d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>
+</svg>
 
 <header>
   <div class="kicker">PGCSEDS · IIIT Hyderabad · 2021</div>
@@ -321,9 +340,11 @@ footer {
     <li><strong>98%</strong><span>test coverage</span></li>
     <li><strong>3</strong><span>services</span></li>
   </ul>
-  <pre class="flow" aria-label="Request flow between the services">client ─POST /process─► processr :8888 ─POST /train─► trainr :7777 ─POST /reload_model─► predictr :9999
-                                                         │                                  ▲
-                                                         └────── models volume (shared) ─────┘</pre>
+  <figure class="diagram">
+    <svg class="dg wide" viewBox="0 0 910 250" role="img" aria-label="Feedback goes from the client through processr to trainr. trainr saves each new model to the shared volume and calls predictr's /reload_model, so predictions switch to the new model without a restart."><rect class="n" x="20" y="36" width="110" height="200" rx="8"/><text class="t" x="75" y="133">Client</text><text class="s" x="75" y="151">API caller</text><rect class="n" x="230" y="36" width="190" height="64" rx="8"/><text class="t" x="325" y="65">processr</text><text class="s" x="325" y="83">:8888 · clean, dedupe</text><rect class="n" x="520" y="36" width="190" height="64" rx="8"/><text class="t" x="615" y="65">trainr</text><text class="s" x="615" y="83">:7777 · retrain, save</text><rect class="n" x="520" y="172" width="190" height="64" rx="8"/><text class="t" x="615" y="201">predictr</text><text class="s" x="615" y="219">:9999 · serve</text><path class="n" d="M780,112 V160 A55,7 0 0 0 890,160 V112"/><ellipse class="n" cx="835" cy="112" rx="55" ry="7"/><text class="t" x="835" y="140">models</text><text class="s" x="835" y="155">shared volume</text><path class="e" d="M130,68 H228" marker-end="url(#ah)"/><text class="l mid" x="179" y="60">POST /process</text><path class="e" d="M420,68 H518" marker-end="url(#ah)"/><text class="l mid" x="469" y="60">POST /train</text><path class="e acc" d="M710,68 H835 V103" marker-end="url(#ah-acc)"/><text class="l acc mid" x="770" y="60">writes model</text><path class="e acc" d="M615,100 V170" marker-end="url(#ah-acc)"/><text class="l acc end" x="607" y="140">POST /reload_model</text><path class="e acc" d="M835,169 V204 H712" marker-end="url(#ah-acc)"/><text class="l acc mid" x="772" y="222">loads model</text><path class="e" d="M130,204 H518" marker-end="url(#ah)"/><text class="l mid" x="325" y="196">POST /predict_wine</text></svg>
+    <svg class="dg tall" viewBox="0 0 400 436" role="img" aria-label="Feedback goes from the client through processr to trainr. trainr saves each new model to the shared volume and calls predictr's /reload_model, so predictions switch to the new model without a restart."><rect class="n" x="20" y="16" width="360" height="44" rx="8"/><text class="t" x="200" y="43">Client</text><rect class="n" x="20" y="110" width="120" height="58" rx="8"/><text class="t" x="80" y="136">processr</text><text class="s" x="80" y="154">:8888 · clean</text><rect class="n" x="20" y="238" width="120" height="58" rx="8"/><text class="t" x="80" y="264">trainr</text><text class="s" x="80" y="282">:7777 · retrain</text><rect class="n" x="260" y="238" width="120" height="58" rx="8"/><text class="t" x="320" y="264">predictr</text><text class="s" x="320" y="282">:9999 · serve</text><path class="n" d="M150,368 V416 A50,7 0 0 0 250,416 V368"/><ellipse class="n" cx="200" cy="368" rx="50" ry="7"/><text class="t" x="200" y="396">models</text><text class="s" x="200" y="411">shared volume</text><path class="e" d="M80,60 V108" marker-end="url(#ah)"/><text class="l " x="88" y="90">POST /process</text><path class="e" d="M80,168 V236" marker-end="url(#ah)"/><text class="l " x="88" y="208">POST /train</text><path class="e" d="M320,60 V236" marker-end="url(#ah)"/><text class="l end" x="312" y="145">POST</text><text class="l end" x="312" y="159">/predict_wine</text><path class="e acc" d="M140,267 H258" marker-end="url(#ah-acc)"/><text class="l acc mid" x="199" y="259">POST</text><text class="l acc mid" x="199" y="284">/reload_model</text><path class="e acc" d="M80,296 V392 H148" marker-end="url(#ah-acc)"/><text class="l acc " x="88" y="340">writes</text><path class="e acc" d="M250,392 H320 V298" marker-end="url(#ah-acc)"/><text class="l acc end" x="312" y="340">loads</text></svg>
+    <figcaption>Feedback goes from the client through processr to trainr. trainr saves each new model to the shared volume and calls predictr's /reload_model, so predictions switch to the new model without a restart. The highlighted path is that model hand-off.</figcaption>
+  </figure>
   <div class="cols">
     <div>
       <h3>What it does</h3>
@@ -353,10 +374,11 @@ footer {
     <li><strong>98%</strong><span>coverage (95% gate)</span></li>
     <li><strong>72</strong><span>CVEs triaged</span></li>
   </ul>
-  <pre class="flow" aria-label="Pipeline jobs">push ──► unittest ───────────────────────────────────┐
-     ├─► codecoverage  py3.10/3.11/3.12 × ubuntu/windows ┤
-     ├─► container-security  build ► Grype scan ► SARIF report
-     └──────────────────────────────────────────────► upload_zip (after all 3 pass)</pre>
+  <figure class="diagram">
+    <svg class="dg wide" viewBox="0 0 760 260" role="img" aria-label="Every push or pull request starts three jobs in parallel: unit tests, coverage on six Python and OS combinations, and a container vulnerability scan. The release job runs only after all three pass."><rect class="n" x="20" y="98" width="130" height="64" rx="8"/><text class="t" x="85" y="127">push or PR</text><text class="s" x="85" y="145">GitHub event</text><rect class="n" x="230" y="16" width="250" height="64" rx="8"/><text class="t" x="355" y="45">unittest</text><text class="s" x="355" y="63">pytest · 11 tests</text><rect class="n" x="230" y="98" width="250" height="64" rx="8"/><text class="t" x="355" y="127">codecoverage</text><text class="s" x="355" y="145">3 Python × 2 OS · ≥95% → Codecov</text><rect class="n" x="230" y="180" width="250" height="64" rx="8"/><text class="t" x="355" y="209">container-security</text><text class="s" x="355" y="227">build → Grype scan → SARIF report</text><rect class="n acc" x="590" y="98" width="150" height="64" rx="8"/><text class="t" x="665" y="127">upload_zip</text><text class="s" x="665" y="145">release.zip artifact</text><path class="e" d="M150,130 H228" marker-end="url(#ah)"/><path class="e" d="M190,130 V48 H228" marker-end="url(#ah)"/><path class="e" d="M190,130 V212 H228" marker-end="url(#ah)"/><path class="e acc" d="M480,48 H525 V130" /><path class="e acc" d="M480,212 H525 V130" /><path class="e acc" d="M480,130 H588" marker-end="url(#ah-acc)"/><text class="l acc " x="533" y="90">needs: all 3 pass</text></svg>
+    <svg class="dg tall" viewBox="0 0 380 384" role="img" aria-label="Every push or pull request starts three jobs in parallel: unit tests, coverage on six Python and OS combinations, and a container vulnerability scan. The release job runs only after all three pass."><rect class="n" x="20" y="12" width="340" height="44" rx="8"/><text class="t" x="190" y="39">push or pull request</text><rect class="n" x="70" y="80" width="270" height="50" rx="8"/><text class="t" x="205" y="102">unittest</text><text class="s" x="205" y="120">pytest · 11 tests</text><rect class="n" x="70" y="150" width="270" height="50" rx="8"/><text class="t" x="205" y="172">codecoverage</text><text class="s" x="205" y="190">3 Python × 2 OS · ≥95%</text><rect class="n" x="70" y="220" width="270" height="50" rx="8"/><text class="t" x="205" y="242">container-security</text><text class="s" x="205" y="260">Grype scan → SARIF report</text><rect class="n acc" x="70" y="320" width="270" height="50" rx="8"/><text class="t" x="205" y="342">upload_zip</text><text class="s" x="205" y="360">release.zip artifact</text><path class="e" d="M40,56 V105 H68" marker-end="url(#ah)"/><path class="e" d="M40,56 V175 H68" marker-end="url(#ah)"/><path class="e" d="M40,56 V245 H68" marker-end="url(#ah)"/><path class="e acc" d="M340,105 H358 V345 H342" marker-end="url(#ah-acc)"/><path class="e acc" d="M340,175 H358" /><path class="e acc" d="M340,245 H358" /><text class="l acc end" x="350" y="302">needs: all 3 pass</text></svg>
+    <figcaption>Every push or pull request starts three jobs in parallel: unit tests, coverage on six Python and OS combinations, and a container vulnerability scan. The release job runs only after all three pass. The highlighted path is that release gate.</figcaption>
+  </figure>
   <div class="cols">
     <div>
       <h3>Security findings</h3>
