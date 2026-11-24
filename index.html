@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Praveen Patnaik · ML Systems</title>
+<meta name="description" content="Projects in MLOps, DevSecOps, Docker microservices and data science by Praveen Patnaik.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; the four projects are laid out as stages of an ML delivery pipeline (data → model → service → containers → security gate). */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #141a26;
+  --ink-2: #4a5468;
+  --line: #dde1e8;
+  --accent: #2550b8;
+  --accent-soft: #e6ecfa;
+  --good: #1d7a46;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.84rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: clamp(2.1rem, 5vw, 3.2rem);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f131b; --surface: #161c27; --ink: #e8ecf3; --ink-2: #a3adbf;
+    --line: #283142; --accent: #8fb0ff; --accent-soft: #1d2a47; --good: #5fcf8e;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f131b; --surface: #161c27; --ink: #e8ecf3; --ink-2: #a3adbf;
+  --line: #283142; --accent: #8fb0ff; --accent-soft: #1d2a47; --good: #5fcf8e;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--step-0)/1.6 var(--font-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px);
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+.wrap { max-width: 920px; margin: 0 auto; }
+
+/* header */
+header { padding-block: 4.5rem 2.5rem; display: grid; gap: 1.1rem; }
+.kicker {
+  font: 500 var(--step--1)/1 var(--font-mono);
+  color: var(--ink-2);
+  letter-spacing: 0.04em;
+}
+h1 {
+  font: 700 var(--step-3)/1.05 var(--font-display);
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+h1 span { color: var(--accent); }
+.lede { max-width: 62ch; font-size: var(--step-1); line-height: 1.5; color: var(--ink-2); margin: 0; }
+.links { display: flex; flex-wrap: wrap; gap: 0.6rem 1.4rem; font: 500 var(--step--1)/1.4 var(--font-mono); }
+
+/* pipeline strip: the projects as delivery stages */
+.pipeline {
+  margin-block: 1rem 3.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.stage {
+  padding: 1rem 1.1rem;
+  display: grid;
+  gap: 0.25rem;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+.stage + .stage { border-left: 1px solid var(--line); }
+.stage + .stage::before {
+  content: "";
+  position: absolute;
+  left: -7px; top: 50%;
+  width: 12px; height: 12px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  transform: translateY(-50%) rotate(45deg);
+}
+.stage:hover, .stage:focus-visible { background: var(--accent-soft); outline: none; }
+.stage:hover::before, .stage:focus-visible::before { background: var(--accent-soft); }
+.stage b { font: 500 var(--step--1)/1.2 var(--font-mono); color: var(--accent); letter-spacing: 0.03em; }
+.stage span { font-weight: 600; line-height: 1.3; }
+.stage small { color: var(--ink-2); font-size: var(--step--1); }
+
+/* projects */
+main { display: grid; gap: 4rem; padding-bottom: 4rem; }
+.project { display: grid; gap: 1.2rem; scroll-margin-top: 1.5rem; }
+.project-head { display: grid; gap: 0.4rem; }
+.meta {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1rem;
+  font: 400 var(--step--1)/1.4 var(--font-mono); color: var(--ink-2);
+}
+h2 {
+  font: 700 var(--step-2)/1.15 var(--font-display);
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+.project p { margin: 0; max-width: 66ch; }
+.metrics {
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  margin: 0; padding: 0; list-style: none;
+}
+.metrics li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.55rem 0.85rem;
+  background: var(--surface);
+  display: grid;
+  min-width: 0;
+}
+.metrics strong {
+  font: 500 var(--step-1)/1.2 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.metrics span { font-size: var(--step--1); color: var(--ink-2); }
+.cols { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 2rem; }
+h3 {
+  font: 500 var(--step--1)/1.3 var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-2);
+  margin: 0 0 0.6rem;
+}
+ul.built { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.45rem; }
+ul.built li::marker { color: var(--accent); }
+.flow {
+  margin: 0;
+  font: 400 0.8rem/1.6 var(--font-mono);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--ink);
+}
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+.chips li {
+  font: 400 var(--step--1)/1 var(--font-mono);
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: var(--step--1); }
+th, td { padding: 0.55rem 0.8rem; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+th { font: 500 0.75rem/1.3 var(--font-mono); color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.06em; }
+td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+tr.best td { font-weight: 600; }
+tr.best td:first-child::after { content: " best"; font: 500 0.7rem var(--font-mono); color: var(--good); }
+.repo { font: 500 var(--step--1)/1.4 var(--font-mono); }
+
+/* skills + footer */
+.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem 2rem; }
+.skills div { min-width: 0; }
+.skills p { margin: 0; color: var(--ink-2); }
+.note {
+  border-left: 3px solid var(--line);
+  padding: 0.2rem 0 0.2rem 1rem;
+  color: var(--ink-2);
+  font-size: var(--step--1);
+  max-width: 70ch;
+}
+footer {
+  border-top: 1px solid var(--line);
+  padding-block: 1.5rem 3rem;
+  font: 400 var(--step--1)/1.6 var(--font-mono);
+  color: var(--ink-2);
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; justify-content: space-between;
+}
+
+@media (max-width: 720px) {
+  header { padding-block: 2.5rem 1.5rem; }
+  .pipeline { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .stage:nth-child(3) { border-left: 0; }
+  .stage:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .stage:nth-child(3)::before { display: none; }
+  .cols { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+}
+@media (max-width: 420px) {
+  .pipeline { grid-template-columns: minmax(0, 1fr); }
+  .stage + .stage { border-left: 0; border-top: 1px solid var(--line); }
+  .stage + .stage::before { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">PGCSEDS · IIIT Hyderabad · 2021</div>
+  <h1>Praveen Patnaik<br><span>ML systems, from model to production</span></h1>
+  <p class="lede">Four projects that take machine-learning models through the whole delivery path: training and model selection, REST serving with FastAPI, Docker microservices with online retraining, and CI pipelines that test, measure coverage and scan containers for vulnerabilities before release.</p>
+  <nav class="links" aria-label="Profiles">
+    <a href="https://github.com/Bpraveenpatnaik">github.com/Bpraveenpatnaik</a>
+  </nav>
+</header>
+
+<nav class="pipeline" aria-label="Projects">
+  <a class="stage" href="#hackathon"><b>data → model</b><span>House price prediction</span><small>scikit-learn · PySpark</small></a>
+  <a class="stage" href="#mlops"><b>model → API</b><span>Iris prediction API</span><small>FastAPI · model selection</small></a>
+  <a class="stage" href="#compose"><b>API → services</b><span>ML microservices</span><small>Docker Compose · retraining</small></a>
+  <a class="stage" href="#devsecops"><b>services → release</b><span>DevSecOps pipeline</span><small>GitHub Actions · Grype</small></a>
+</nav>
+
+<main>
+
+<section class="project" id="hackathon" aria-labelledby="h-hackathon">
+  <div class="project-head">
+    <div class="meta"><span>Hackathon · IIIT Hyderabad</span><span>Sep 2021, updated 2026</span><span>Individual</span></div>
+    <h2 id="h-hackathon">House price prediction</h2>
+  </div>
+  <p>Predicting sale prices for 1,460 houses in Ames, Iowa, from 79 features (the data used in Kaggle's House Prices competition). The work covers exploration, cleaning, a five-model comparison in scikit-learn, and the same pipeline rebuilt in PySpark MLlib.</p>
+  <ul class="metrics">
+    <li><strong>0.927</strong><span>test R², Lasso</span></li>
+    <li><strong>$23.6k</strong><span>test RMSE</span></li>
+    <li><strong>5</strong><span>models compared</span></li>
+  </ul>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Model</th><th class="num">CV RMSE (log price)</th><th class="num">Test RMSE ($)</th><th class="num">Test R²</th></tr></thead>
+      <tbody>
+        <tr class="best"><td>Lasso (CV alpha)</td><td class="num">0.130</td><td class="num">23,621</td><td class="num">0.927</td></tr>
+        <tr><td>Ridge (CV alpha)</td><td class="num">0.135</td><td class="num">25,480</td><td class="num">0.915</td></tr>
+        <tr><td>Random forest (300 trees)</td><td class="num">0.144</td><td class="num">29,120</td><td class="num">0.889</td></tr>
+        <tr><td>PCA (5) + linear</td><td class="num">0.148</td><td class="num">31,467</td><td class="num">0.871</td></tr>
+        <tr><td>PySpark elastic net</td><td class="num">0.147 (test)</td><td class="num">33,198</td><td class="num">0.887</td></tr>
+        <tr><td>Plain linear regression</td><td class="num">unstable</td><td class="num">n/a</td><td class="num">n/a</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cols">
+    <div>
+      <h3>Approach</h3>
+      <ul class="built">
+        <li>Trained on log(price), since sale prices are skewed to the right; overall quality (r = 0.79) and living area (0.71) are the strongest single features.</li>
+        <li>Dropped the 7 columns missing in more than 15% of rows, imputed the rest, and one-hot encoded inside a scikit-learn pipeline, so nothing leaks between folds.</li>
+        <li>Found that plain regression is numerically unstable on about 270 correlated one-hot columns, while Lasso and Ridge stay stable and win.</li>
+        <li>Rebuilt the pipeline in Spark (Imputer, VectorAssembler, StandardScaler, elastic-net regression), with the target kept out of the features.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Stack</h3>
+      <ul class="chips"><li>pandas</li><li>scikit-learn</li><li>Lasso / Ridge</li><li>PCA</li><li>PySpark MLlib</li><li>seaborn</li></ul>
+      <p class="repo" style="margin-top:1rem"><a href="https://github.com/Bpraveenpatnaik/IIITH-Hackathon-2">IIITH-Hackathon-2 →</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="project" id="mlops" aria-labelledby="h-mlops">
+  <div class="project-head">
+    <div class="meta"><span>Course project</span><span>Jul 2021, updated 2026</span></div>
+    <h2 id="h-mlops">Iris prediction API with model selection</h2>
+  </div>
+  <p>A FastAPI service that trains two classifiers at startup and serves whichever scores higher in cross-validation. Every prediction says which model made it and when, and a feedback endpoint retrains on new labelled samples without forgetting earlier data.</p>
+  <ul class="metrics">
+    <li><strong>96.7%</strong><span>held-out accuracy</span></li>
+    <li><strong>99%</strong><span>test coverage</span></li>
+    <li><strong>8</strong><span>pytest tests</span></li>
+  </ul>
+  <div class="cols">
+    <div>
+      <h3>What it does</h3>
+      <ul class="built">
+        <li>Scores Gaussian Naive Bayes (0.958) and a decision tree (0.942) with 5-fold cross-validation and serves the winner.</li>
+        <li>Returns <code>flower_class</code>, <code>model</code> and a UTC <code>timestamp</code> with every prediction.</li>
+        <li>Validates measurements and class labels, so bad input gets a clear 422 response.</li>
+        <li>GitHub Actions runs the tests with a 90% coverage gate, and a release job packages the code only after they pass.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Stack</h3>
+      <ul class="chips"><li>FastAPI</li><li>Pydantic</li><li>scikit-learn</li><li>pytest</li><li>GitHub Actions</li></ul>
+      <p class="repo" style="margin-top:1rem"><a href="https://github.com/Bpraveenpatnaik/mlops-iris">mlops-iris →</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="project" id="compose" aria-labelledby="h-compose">
+  <div class="project-head">
+    <div class="meta"><span>Course project</span><span>Aug 2021, updated 2026</span></div>
+    <h2 id="h-compose">Wine classifier as Docker microservices</h2>
+  </div>
+  <p>Three FastAPI services split the work of an ML system: one cleans incoming samples, one retrains the model, one serves predictions. They run together under Docker Compose and share each new model through a volume, so a retrained model goes live without restarting anything. The model predicts which of three cultivars a wine came from, using 13 chemical measurements.</p>
+  <ul class="metrics">
+    <li><strong>97.8%</strong><span>cross-validated accuracy</span></li>
+    <li><strong>98%</strong><span>test coverage</span></li>
+    <li><strong>3</strong><span>services</span></li>
+  </ul>
+  <pre class="flow" aria-label="Request flow between the services">client ─POST /process─► processr :8888 ─POST /train─► trainr :7777 ─POST /reload_model─► predictr :9999
+                                                         │                                  ▲
+                                                         └────── models volume (shared) ─────┘</pre>
+  <div class="cols">
+    <div>
+      <h3>What it does</h3>
+      <ul class="built">
+        <li>Keeps every feedback sample and retrains on the base data plus the full history, reporting cross-validated accuracy after each update.</li>
+        <li>Shares one set of Pydantic schemas across the services, rejecting negative values and unknown labels.</li>
+        <li>Returns a clear 502 or 503 when a downstream service or the model isn't available.</li>
+        <li>CI starts the whole Compose stack and sends real requests through it end to end.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Stack</h3>
+      <ul class="chips"><li>Docker Compose</li><li>FastAPI</li><li>scikit-learn</li><li>pytest</li><li>GitHub Actions</li></ul>
+      <p class="repo" style="margin-top:1rem"><a href="https://github.com/Bpraveenpatnaik/compose-iris">compose-iris →</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="project" id="devsecops" aria-labelledby="h-devsecops">
+  <div class="project-head">
+    <div class="meta"><span>Course project</span><span>Sep 2021, updated 2026</span></div>
+    <h2 id="h-devsecops">DevSecOps pipeline for an ML API</h2>
+  </div>
+  <p>A GitHub Actions pipeline that tests a containerized ML service on six platform combinations, enforces a coverage gate, scans the Docker image for known vulnerabilities, and publishes a release only after every check passes.</p>
+  <ul class="metrics">
+    <li><strong>6</strong><span>parallel test jobs</span></li>
+    <li><strong>98%</strong><span>coverage (95% gate)</span></li>
+    <li><strong>72</strong><span>CVEs triaged</span></li>
+  </ul>
+  <pre class="flow" aria-label="Pipeline jobs">push ──► unittest ───────────────────────────────────┐
+     ├─► codecoverage  py3.10/3.11/3.12 × ubuntu/windows ┤
+     ├─► container-security  build ► Grype scan ► SARIF report
+     └──────────────────────────────────────────────► upload_zip (after all 3 pass)</pre>
+  <div class="cols">
+    <div>
+      <h3>Security findings</h3>
+      <ul class="built">
+        <li>The scan of the original image found 72 vulnerabilities: 2 critical (glibc CVE-2021-33574), 6 medium, 6 low and 58 negligible.</li>
+        <li>All of them were in Debian packages from the base image, none in the app's own code, and none had an upstream fix.</li>
+        <li>The remedy was a newer slim base image, a non-root user and a smaller image, plus a script that turns each SARIF report into a severity table and chart.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Stack</h3>
+      <ul class="chips"><li>GitHub Actions</li><li>Docker</li><li>Anchore Grype</li><li>SARIF</li><li>Codecov</li></ul>
+      <p class="repo" style="margin-top:1rem"><a href="https://github.com/Bpraveenpatnaik/devsecops-iris">devsecops-iris →</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="project" aria-labelledby="h-skills">
+  <h2 id="h-skills">Skills</h2>
+  <div class="skills">
+    <div><h3>ML engineering</h3><p>Model training and evaluation, cross-validated model selection, REST serving, online retraining</p></div>
+    <div><h3>MLOps and DevOps</h3><p>GitHub Actions (matrix builds, gated releases, coverage gates), Docker, Docker Compose</p></div>
+    <div><h3>DevSecOps</h3><p>Container scanning with Anchore/Grype, SARIF reporting, image hardening, Dependabot</p></div>
+    <div><h3>Data science</h3><p>EDA, missing-data handling, one-hot encoding, PCA, regularized regression, PySpark MLlib</p></div>
+    <div><h3>Testing</h3><p>pytest, FastAPI TestClient, pytest-cov, Codecov, end-to-end smoke tests</p></div>
+    <div><h3>Languages and libraries</h3><p>Python, FastAPI, Pydantic, pandas, NumPy, scikit-learn, matplotlib, seaborn</p></div>
+  </div>
+  <p class="note">The Iris API, wine microservices and DevSecOps projects began as course templates from the PGCSEDS program at IIIT Hyderabad, and each was extended well beyond the template. The house price project was built from scratch during a hackathon. All four repositories were updated in 2026 with fixes, tests and documentation.</p>
+</section>
+
+</main>
+
+<footer>
+  <span>Praveen Patnaik</span>
+  <a href="https://github.com/Bpraveenpatnaik">github.com/Bpraveenpatnaik</a>
+</footer>
+
+</div>
+</body>
+</html>
